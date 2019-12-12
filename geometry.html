@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Geometry</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    #app {
+      width: 100vw;
+      height: 100vh;
+      background: url(images/grid.gif);
+    }
+  </style>
+</head>
+<body onload="main(document.getElementById('app'))">
+  <div id="app"></div>
+
+  <script>
+    mxBasePath = './mxgraph/src';
+  </script>
+  <script src="./mxgraph/mxClient.js"></script>
+  <script>
+    function main(container) {
+      // 禁用鼠标右键唤出菜单
+      mxEvent.disableContextMenu(container);
+
+      const graph = new mxGraph(container);
+      const parent = graph.getDefaultParent();
+
+      // 开启区域选择
+      new mxRubberband(graph);
+
+      graph.getModel().beginUpdate();
+      try {
+        graph.insertVertex(parent, null, 'A', 50, 20, 80, 30);
+
+        const v_1 = graph.insertVertex(parent, null, 'B', 170, 20, 100, 200);
+        // insertVertex 最后一个参数为 true 的时候, 前面的 x,y 就不是像素单位了, 而是以 parent 为基准的相对单位, 比如 x 为 0.5 就代表起始点 x 坐标是 parent 的一半
+        const v_2 = graph.insertVertex(v_1, null, 'C', 0.5, 1, 80, 30, '', true);
+
+        const v1 = graph.insertVertex(parent, null, 'hello', 320, 20, 80, 30);
+        const v2 = graph.insertVertex(parent, null, 'world', 500, 150, 80, 30);
+        const e1 = graph.insertEdge(parent, null, '30%', v1, v2);
+
+        e1.geometry.x = -0.3; // [-1, 1] 经线方向位置, 线的中心点是 0, 往 source 的方向上是负值, 往 target 方向上是正值
+        e1.geometry.y = 10; // 垂直线方向上的位置
+
+        const v3 = graph.insertVertex(parent, null, 'hello', 320, 320, 80, 30);
+        const v4 = graph.insertVertex(parent, null, 'world', 500, 450, 80, 30);
+        const e2 = graph.insertEdge(parent, null, '30%', v3, v4);
+        // relative 必须为 true，false 无效
+        e2.geometry.relative = true;
+        e2.geometry.x = 0;
+        e2.geometry.y = -20;
+      } finally {
+        graph.getModel().endUpdate();
+      }
+    }
+  </script>
+</body>
+</html>
