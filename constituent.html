@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>constituent</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+    }
+    #app {
+      width: 100vw;
+      height: 100vh;
+      background-image: url(./images/grid.gif);
+    }
+  </style>
+</head>
+<body onload="main(document.getElementById('app'))">
+  <div id="app"></div>
+
+  <script>
+    mxBasePath = './mxgraph/src';
+  </script>
+  <script src="./mxgraph/mxClient.js"></script>
+  <script>
+    function main(container) {
+      // 禁用鼠标右键菜单
+      mxEvent.disableContextMenu(container);
+
+      const graph = new mxGraph(container);
+      const parent = graph.getDefaultParent();
+
+      // 设置这个属性后节点之间才可以连接
+      graph.setConnectable(true);
+
+      // 禁用折叠功能
+      graph.foldingEnabled = false;
+      // 开启子节点随父节点缩放而缩放
+      graph.recursiveResize = true;
+
+      // 开启区域选择
+      new mxRubberband(graph);
+
+      graph.getModel().beginUpdate();
+      try {
+        const v1 = graph.insertVertex(parent, null, 'Hello', 20, 20, 300, 200);
+        const v2 = graph.insertVertex(v1, null, 'World', 200, 150, 80, 30);
+      } finally {
+        graph.getModel().endUpdate();
+      }
+    }
+  </script>
+</body>
+</html>
